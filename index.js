@@ -34,7 +34,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/products", (req, res) => {
-  res.json(products);
+  res.status(200).json(products);
 });
 
 app.post("/products", (req, res) => {
@@ -58,8 +58,13 @@ app.post("/products", (req, res) => {
 });
 
 app.get("/products/:id", (req, res) => {
-  console.log(req.params);
-  res.send("OK");
+  const product = products.find((product) => product.id == req.params.id);
+
+  if (!product) {
+    return res.status(404).json({ message: "Product not found!" });
+  }
+
+  res.status(200).json(product);
 });
 
 app.listen(3000, () => console.log("Server started on port 3000"));
