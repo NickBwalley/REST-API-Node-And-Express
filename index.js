@@ -1,4 +1,5 @@
 const express = require("express");
+const crypto = require("crypto");
 
 const app = express();
 
@@ -6,18 +7,21 @@ app.use(express.json());
 
 const products = [
   {
+    id: "9779af68-c227-4bdc-9da0-a3e410583e3a",
     name: "Laptop",
-    price: 400.0,
+    price: 400,
     quantity: 4,
     active: true,
   },
   {
+    id: "9779af68-c227-4bdc-9da0-a3e410583e4a",
     name: "Keboard",
     price: 29.99,
     quantity: 10,
     active: true,
   },
   {
+    id: "9779af68-c227-4bdc-9da0-a3e410583e5a",
     name: "Mouse",
     price: 19.99,
     quantity: 14,
@@ -34,7 +38,27 @@ app.get("/products", (req, res) => {
 });
 
 app.post("/products", (req, res) => {
-  console.log(req.body);
+  const { name, price, quantity, active } = req.body;
+
+  if (!name) {
+    return res.status(422).json({ message: "Name is required!" });
+  }
+
+  const id = crypto.randomUUID();
+
+  products.push({
+    id,
+    name,
+    price,
+    quantity,
+    active,
+  });
+
+  res.status(201).json({ message: "product created successfully!", id });
+});
+
+app.get("/products/:id", (req, res) => {
+  console.log(req.params);
   res.send("OK");
 });
 
