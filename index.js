@@ -67,4 +67,41 @@ app.get("/products/:id", (req, res) => {
   res.status(200).json(product);
 });
 
+app.put("/products/:id", (req, res) => {
+  const product = products.find((product) => product.id == req.params.id);
+
+  if (!product) {
+    return res.status(404).json({ message: "Product not found!" });
+  }
+
+  const { name, price, quantity, active } = req.body;
+
+  if (name) {
+    product.name = name;
+  }
+  if (price) {
+    product.price = price;
+  }
+  if (quantity) {
+    product.quantity = quantity;
+  }
+  if ("active" in req.body) {
+    product.active = active;
+  }
+
+  res.status(200).json({ message: "product updated successfully!" });
+});
+
+app.delete("/products/:id", (req, res) => {
+  const productIndex = products.findIndex(
+    (product) => product.id == req.params.id
+  );
+  if (productIndex == -1)
+    return res.status(404).json({ message: "Product not found!" });
+
+  products.splice(productIndex, 1);
+
+  res.status(200).json({ message: "Product deleted successfully! " });
+});
+
 app.listen(3000, () => console.log("Server started on port 3000"));
